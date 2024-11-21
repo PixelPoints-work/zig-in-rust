@@ -2,6 +2,8 @@
 
 I'm porting the Zig compiler to Rust as a learning exercise. This project combines my interest in both languages while diving deep into Zig's unique approach to compiler design.
 
+Will I finish? Most likely not. LIGMA.
+
 ## Inspiration
 - Mitchell Hashimoto's excellent blog series on the Zig compiler: https://mitchellh.com/zig
 - The official Zig Language repository: https://github.com/ziglang/zig
