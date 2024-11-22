@@ -198,5 +198,166 @@ pub fn parse_tag(tag: &str) -> Option<Tag> {
 }
 
 impl Tag {
-    pub fn lexeme(&self) -> Option<&'static str> {}
+    pub fn lexeme(&self) -> Option<&'static str> {
+        match self {
+            Tag::Invalid
+            | Tag::Identifier
+            | Tag::StringLiteral
+            | Tag::MultilineStringLiteralLine
+            | Tag::CharLiteral
+            | Tag::Eof
+            | Tag::Builtin
+            | Tag::NumberLiteral
+            | Tag::DocComment
+            | Tag::ContainerDocComment => None,
+
+            Tag::InvalidPeriodAsterisks => Some(".**"),
+            Tag::Bang => Some("!"),
+            Tag::Pipe => Some("|"),
+            Tag::PipePipe => Some("||"),
+            Tag::PipeEqual => Some("|="),
+            Tag::Equal => Some("="),
+            Tag::EqualEqual => Some("=="),
+            Tag::EqualAngleBrackRight => Some("=>"),
+            Tag::BangEqual => Some("!="),
+            Tag::LParen => Some("("),
+            Tag::RParen => Some(")"),
+            Tag::Semicolon => Some(";"),
+            Tag::Percent => Some("%"),
+            Tag::PercentEqual => Some("%="),
+            Tag::LBrace => Some("{"),
+            Tag::RBrace => Some("}"),
+            Tag::LBrack => Some("["),
+            Tag::RBrack => Some("]"),
+            Tag::Period => Some("."),
+            Tag::PeriodAsterisk => Some(".*"),
+            Tag::Ellipsis2 => Some(".."),
+            Tag::Ellipsis3 => Some("..."),
+            Tag::Caret => Some("^"),
+            Tag::CaretEqual => Some("^="),
+            Tag::Plus => Some("+"),
+            Tag::PlusPlus => Some("++"),
+            Tag::PlusEqual => Some("+="),
+            Tag::PlusPercent => Some("+%"),
+            Tag::PlusPercentEqual => Some("+%="),
+            Tag::PlusPipe => Some("+|"),
+            Tag::PlusPipeEqual => Some("+|="),
+            Tag::Minus => Some("-"),
+            Tag::MinusEqual => Some("-="),
+            Tag::MinusPercent => Some("-%"),
+            Tag::MinusPercentEqual => Some("-%="),
+            Tag::MinusPipe => Some("-|"),
+            Tag::MinusPipeEqual => Some("-|="),
+            Tag::Asterisk => Some("*"),
+            Tag::AsteriskEqual => Some("*="),
+            Tag::AsteriskAsterisk => Some("**"),
+            Tag::AsteriskPercent => Some("*%"),
+            Tag::AsteriskPercentEqual => Some("*%="),
+            Tag::AsteriskPipe => Some("*|"),
+            Tag::AsteriskPipeEqual => Some("*|="),
+            Tag::Arrow => Some("->"),
+            Tag::Colon => Some(":"),
+            Tag::Slash => Some("/"),
+            Tag::SlashEqual => Some("/="),
+            Tag::Comma => Some(","),
+            Tag::Ampersand => Some("&"),
+            Tag::AmpersandEqual => Some("&="),
+            Tag::QuestionMark => Some("?"),
+            Tag::AngleBrackLeft => Some("<"),
+            Tag::AngleBrackLeftEqual => Some("<="),
+            Tag::AngleBrackAngleBrackLeft => Some("<<"),
+            Tag::AngleBrackAngleBrackLeftEqual => Some("<<="),
+            Tag::AngleBrackAngleBrackLeftPipe => Some("<<|"),
+            Tag::AngleBrackAngleBrackLeftPipeEqual => Some("<<|="),
+            Tag::AngleBrackRight => Some(">"),
+            Tag::AngleBrackRightEqual => Some(">="),
+            Tag::AngleBrackAngleBrackRight => Some(">>"),
+            Tag::AngleBrackAngleBrackRightEqual => Some(">>="),
+            Tag::Tilde => Some("~"),
+            Tag::KWAddrspace => Some("addrspace"),
+            Tag::KWAlign => Some("align"),
+            Tag::KWAllowzero => Some("allowzero"),
+            Tag::KWAnd => Some("and"),
+            Tag::KWAnyframe => Some("anyframe"),
+            Tag::KWAnytype => Some("anytype"),
+            Tag::KWAsm => Some("asm"),
+            Tag::KWAsync => Some("async"),
+            Tag::KWAwait => Some("await"),
+            Tag::KWBreak => Some("break"),
+            Tag::KWCallconv => Some("callconv"),
+            Tag::KWCatch => Some("catch"),
+            Tag::KWComptime => Some("comptime"),
+            Tag::KWConst => Some("const"),
+            Tag::KWContinue => Some("continue"),
+            Tag::KWDefer => Some("defer"),
+            Tag::KWElse => Some("else"),
+            Tag::KWEnum => Some("enum"),
+            Tag::KWErrdefer => Some("errdefer"),
+            Tag::KWError => Some("error"),
+            Tag::KWExport => Some("export"),
+            Tag::KWExtern => Some("extern"),
+            Tag::KWFn => Some("fn"),
+            Tag::KWFor => Some("for"),
+            Tag::KWIf => Some("if"),
+            Tag::KWInline => Some("inline"),
+            Tag::KWNoalias => Some("noalias"),
+            Tag::KWNoinline => Some("noinline"),
+            Tag::KWNosuspend => Some("nosuspend"),
+            Tag::KWOpaque => Some("opaque"),
+            Tag::KWOr => Some("or"),
+            Tag::KWOrelse => Some("orelse"),
+            Tag::KWPacked => Some("packed"),
+            Tag::KWPub => Some("pub"),
+            Tag::KWResume => Some("resume"),
+            Tag::KWReturn => Some("return"),
+            Tag::KWLinksection => Some("linksection"),
+            Tag::KWStruct => Some("struct"),
+            Tag::KWSuspend => Some("suspend"),
+            Tag::KWSwitch => Some("switch"),
+            Tag::KWTest => Some("test"),
+            Tag::KWThreadlocal => Some("threadlocal"),
+            Tag::KWTry => Some("try"),
+            Tag::KWUnion => Some("union"),
+            Tag::KWUnreachable => Some("unreachable"),
+            Tag::KWUsingnamespace => Some("usingnamespace"),
+            Tag::KWVar => Some("var"),
+            Tag::KWVolatile => Some("volatile"),
+            Tag::KWWhile => Some("while"),
+        }
+    }
+
+    pub fn symbol(&self) -> &'static str {
+        self.lexeme().unwrap_or_else(|| match self {
+            Tag::Invalid => "invalid token",
+            Tag::Identifier => "an identifier",
+            Tag::StringLiteral | Tag::MultilineStringLiteralLine => "a string literal",
+            Tag::CharLiteral => "a character literal",
+            Tag::Eof => "EOF",
+            Tag::Builtin => "a builtin function",
+            Tag::NumberLiteral => "a number literal",
+            Tag::DocComment | Tag::ContainerDocComment => "a document comment",
+            _ => unreachable!(),
+        })
+    }
+}
+
+pub struct TokenStream<'a> {
+    buffer: &'a str,
+    index: usize,
+}
+
+impl<'a> TokenStream<'a> {
+    pub fn new(buffer: &'a str) -> Self {
+        let index = if buffer.starts_with("\u{FEFF}") { 3 } else { 0 };
+        Self { buffer, index }
+    }
+
+    #[cfg(debug_assertions)]
+    pub fn dump(&self, token: &Token) {
+        println!(
+            "{:0} \"{}\"",
+            token.tag,
+            &self.buffer[token.loc.start..token.loc.end]
+        );
+    }
 }
