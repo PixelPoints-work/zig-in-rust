@@ -193,8 +193,12 @@ static TAGS: phf::Map<&'static str, Tag> = phf_map! {
 
 };
 
-pub fn parse_tag(tag: &str) -> Option<Tag> {
-    TAGS.get(tag).cloned()
+pub fn parse_keyword(tag: &[u8]) -> Option<Tag> {
+    if let Ok(as_str) = std::str::from_utf8(tag) {
+        TAGS.get(as_str).cloned()
+    } else {
+        None
+    }
 }
 
 impl Tag {
