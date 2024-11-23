@@ -342,22 +342,25 @@ impl Tag {
 }
 
 pub struct TokenStream<'a> {
-    buffer: &'a str,
+    buffer: &'a [u8],
     index: usize,
 }
 
 impl<'a> TokenStream<'a> {
-    pub fn new(buffer: &'a str) -> Self {
-        let index = if buffer.starts_with("\u{FEFF}") { 3 } else { 0 };
+    pub fn new(buffer: &'a [u8]) -> Self {
+        let index = if buffer.starts_with(&[0xEF, 0xBB, 0xBF]) {
+            3
+        } else {
+            0
+        };
         Self { buffer, index }
     }
 
     #[cfg(debug_assertions)]
     pub fn dump(&self, token: &Token) {
-        println!(
-            "{:0} \"{}\"",
-            token.tag,
-            &self.buffer[token.loc.start..token.loc.end]
-        );
+        match std::str::from_utf8(&self.buffer[token.loc.start..token.loc.end]) {
+            Ok(text) => println!("{:?} \"{}\"", token.tag, text),
+            Err(_) => println!("{:?} <invalid utf8>", token.tag),
+        }
     }
 }
